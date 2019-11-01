@@ -1,20 +1,26 @@
 from flask import Flask, render_template, url_for, request, jsonify, redirect
 import requests
+import pandas
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 import urllib
 import nltk
 import spacy
+import queue
+from threading import Thread
 # import en_core_web_sm
 from nltk.corpus import stopwords
 from PIL import Image
 from gingerit.gingerit import GingerIt
 import googlemaps
+from time import time
 from grammer import *
 from address import *
 from nairaland import *
 from confidence import *
+from cac_check import *
+
 
 app = Flask(__name__)
 
@@ -32,6 +38,7 @@ def analyze():
     """
     POST Request
     """
+    start_time = time()
     data = request.get_json(force=True)
     try:
         searchTerm = data['company']
@@ -42,64 +49,47 @@ def analyze():
         titl = "You have a KeyError. Please check your JSON input"
         return jsonify(errors=titl)
 
+    jobres = []
+    que = queue.Queue()
+    threads_list = list()
 
-    board = 29
-    try:
-        j = 0
-        while j < 20:
-            if j == 0:
-                nextItem = False
-            else:
-                nextItem = True
-            commentsCurrent = search_item(searchTerm, nextItem, j,  board)
-            add_to_word_list(commentsCurrent)
-            j += 1
-    except:
-        titlee = "Search failed"
-        comm = "Try again"
-        return jsonify(errors=titlee)
+    t = Thread(target=lambda q, arg1: q.put(nairasearch(arg1)), args=(que, searchTerm))
+    t.start()
+    threads_list.append(t)
 
+    t2 = Thread(target=lambda q, arg1: q.put(scraper(arg1)), args=(que, searchTerm))
+    t2.start()
+    threads_list.append(t2)
 
-    polarity = 0
-    positive = 0
-    negative = 0
-    neutral = 0
+    t3 = Thread(target=lambda q, arg1: q.put(verify_address(arg1)), args=(que, addressTerm))
+    t3.start()
+    threads_list.append(t3)
 
+    # Join all the threads
+    for t in threads_list:
+        t.join()
 
-    previous = []
-
-    for tweet in WordList:
-        if tweet in previous:
-            continue
-        previous.append(tweet)
-        analysis = TextBlob(tweet)
-        """evaluating polarity of comments"""
-        polarity += analysis.sentiment.polarity
-
-        if (analysis.sentiment.polarity == 0):
-            neutral += 1
-        elif (analysis.sentiment.polarity < 0.00):
-            negative += 1
-        elif (analysis.sentiment.polarity > 0.0):
-            positive += 1
-
-    noOfSearchTerms = positive + negative + neutral
-
-    positive = percentage(positive, noOfSearchTerms)
-    negative = percentage(negative, noOfSearchTerms)
-    neutral = percentage(neutral, noOfSearchTerms)
-
-    titl = "How people are reacting on " + searchTerm + " by analyzing " + str(noOfSearchTerms) + " comments from " + "on nairaland"
-
-    if (negative> 30):
-        comm = "There is a high percentage of negative comments about this Company online in regards to jobs"
-    elif(negative>20):
-        comm = "There are some negative comments about this Company in regards to jobs" 
-    elif (negative<20):
-        comm = "There is a low percentage of negative comments about this Company online in regards to jobs"
+    # Check thread's return value
+    while not que.empty():
+        result = que.get()
+        jobres.append(result)
 
 
-    addr = verify_address(addressTerm)
+    for i in range(len(jobres)):
+        if isinstance(jobres[i], pandas.core.frame.DataFrame):
+            dg = jobres[i]
+        if isinstance(jobres[i], int) or isinstance(jobres[i], float):
+            negative = jobres[i]
+        if isinstance(jobres[i], str):
+            addr = jobres[i]
+
+
+    if dg.empty:
+        cac = True
+    else:
+        cac = False
+
+
     if addr == "The Company address is valid":
         cont = "This address looks legit"
         auth = True
@@ -115,9 +105,10 @@ def analyze():
     else:
         contt = "You have errors in this invitation"
 
-    report = confidence_interval(correction, auth, negative)
 
-    return jsonify(report=report)
+    report = confidence_interval(correction, auth, negative, cac)
+    print('Time to solve: ', time() - start_time)
+    return jsonify(confidence=report)
 
 @app.route('/form', methods=['POST'])
 def analyze_form():
@@ -134,63 +125,47 @@ def analyze_form():
         return jsonify(errors=titl)
 
 
-    board = 29
-    try:
-        j = 0
-        while j < 20:
-            if j == 0:
-                nextItem = False
-            else:
-                nextItem = True
-            commentsCurrent = search_item(searchTerm, nextItem, j,  board)
-            add_to_word_list(commentsCurrent)
-            j += 1
-    except:
-        titlee = "Search failed"
-        comm = "Try again"
-        return jsonify(errors=titlee)
+    jobres = []
+    que = queue.Queue()
+    threads_list = list()
+
+    t = Thread(target=lambda q, arg1: q.put(nairasearch(arg1)), args=(que, searchTerm))
+    t.start()
+    threads_list.append(t)
+
+    t2 = Thread(target=lambda q, arg1: q.put(scraper(arg1)), args=(que, searchTerm))
+    t2.start()
+    threads_list.append(t2)
+
+    t3 = Thread(target=lambda q, arg1: q.put(verify_address(arg1)), args=(que, addressTerm))
+    t3.start()
+    threads_list.append(t3)
+
+    # Join all the threads
+    for t in threads_list:
+        t.join()
+
+    # Check thread's return value
+    while not que.empty():
+        result = que.get()
+        jobres.append(result)
 
 
-    polarity = 0
-    positive = 0
-    negative = 0
-    neutral = 0
+    for i in range(len(jobres)):
+        if isinstance(jobres[i], pandas.core.frame.DataFrame):
+            dg = jobres[i]
+        if isinstance(jobres[i], int) or isinstance(jobres[i], float):
+            negative = jobres[i]
+        if isinstance(jobres[i], str):
+            addr = jobres[i]
 
 
-    previous = []
-
-    for tweet in WordList:
-        if tweet in previous:
-            continue
-        previous.append(tweet)
-        analysis = TextBlob(tweet)
-        """evaluating polarity of comments"""
-        polarity += analysis.sentiment.polarity
-
-        if (analysis.sentiment.polarity == 0):
-            neutral += 1
-        elif (analysis.sentiment.polarity < 0.00):
-            negative += 1
-        elif (analysis.sentiment.polarity > 0.0):
-            positive += 1
-
-    noOfSearchTerms = positive + negative + neutral
-
-    positive = percentage(positive, noOfSearchTerms)
-    negative = percentage(negative, noOfSearchTerms)
-    neutral = percentage(neutral, noOfSearchTerms)
-
-    titl = "How people are reacting on " + searchTerm + " by analyzing " + str(noOfSearchTerms) + " comments from " + "on nairaland"
-
-    if (negative> 30):
-        comm = "There is a high percentage of negative comments about this Company online in regards to jobs"
-    elif(negative>20):
-        comm = "There are some negative comments about this Company in regards to jobs" 
-    elif (negative<20):
-        comm = "There is a low percentage of negative comments about this Company online in regards to jobs"
+    if dg.empty:
+        cac = True
+    else:
+        cac = False
 
 
-    addr = verify_address(addressTerm)
     if addr == "The Company address is valid":
         cont = "This address looks legit"
         auth = True
@@ -206,9 +181,11 @@ def analyze_form():
     else:
         contt = "You have errors in this invitation"
 
-    report = confidence_interval(correction, auth, negative)
 
-    return jsonify(report=report)
+    report = confidence_interval(correction, auth, negative, cac)
+    
+    return jsonify(confidence=report)
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

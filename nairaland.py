@@ -1,5 +1,6 @@
 import requests
 import urllib
+from textblob import TextBlob
 from bs4 import BeautifulSoup
 
 WordList = []
@@ -45,3 +46,51 @@ def add_to_word_list(strings):
         if word_count(strings[k].text) > 1:
             WordList.append(strings[k].text)
         k += 1
+
+
+def nairasearch(searchTerm):
+    board = 29
+    try:
+        j = 0
+        while j < 20:
+            if j == 0:
+                nextItem = False
+            else:
+                nextItem = True
+            commentsCurrent = search_item(searchTerm, nextItem, j,  board)
+            add_to_word_list(commentsCurrent)
+            j += 1
+    except:
+        negative = 50
+        return negative
+
+    polarity = 0
+    positive = 0
+    negative = 0
+    neutral = 0
+
+
+    previous = []
+
+    for tweet in WordList:
+        if tweet in previous:
+            continue
+        previous.append(tweet)
+        analysis = TextBlob(tweet)
+        """evaluating polarity of comments"""
+        polarity += analysis.sentiment.polarity
+
+        if (analysis.sentiment.polarity == 0):
+            neutral += 1
+        elif (analysis.sentiment.polarity < 0.00):
+            negative += 1
+        elif (analysis.sentiment.polarity > 0.0):
+            positive += 1
+
+    noOfSearchTerms = positive + negative + neutral
+
+    positive = percentage(positive, noOfSearchTerms)
+    negative = percentage(negative, noOfSearchTerms)
+    neutral = percentage(neutral, noOfSearchTerms)
+
+    return negative

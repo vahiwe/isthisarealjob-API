@@ -11,3 +11,5 @@ nltk
 requests
 googlemaps
 pandas
+selenium
+lxml
