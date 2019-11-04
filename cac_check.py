@@ -5,8 +5,11 @@ import re
 import pandas as pd
 from time import sleep, time
 
-GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google-chrome'
-CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google-chrome'
+# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+
+GOOGLE_CHROME_PATH = '/usr/bin/google-chrome'
+CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
 
 
 def get_token(api_key, url, driver):

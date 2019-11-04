@@ -12,7 +12,7 @@ def check(filename):
         g = GingerIt()
         h = g.parse(s)
         corrections += len(h['corrections'])
-    return corrections
+    return [corrections]
 
 def word(filename, final_type): # function to tokenize text 
         tok_sent = nltk.sent_tokenize(filename)

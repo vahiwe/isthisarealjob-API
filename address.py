@@ -10,10 +10,15 @@ def verify_address(address):
     # else:
     #     return "Couldn't verify address"
     if geocode_result == []:
-        return "This address is invalid"
+        addr = "This address is invalid"
     else:
         geocode_result= geocode_result[0]
         if 'plus_code' in geocode_result:
-            return "The Company address is valid"
+            addr = "The Company address is valid"
         else:
-            return "This address is vague, This job invite is likely a scam"
+            addr = "This address is vague, This job invite is likely a scam"
+
+    if addr == "The Company address is valid":
+        return True
+    else:
+        return False

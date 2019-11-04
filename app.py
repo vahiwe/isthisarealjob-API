@@ -8,6 +8,8 @@ import urllib
 import nltk
 import spacy
 import queue
+nltk.download('stopwords')
+nltk.download('punkt')
 from threading import Thread
 # import en_core_web_sm
 from nltk.corpus import stopwords
@@ -65,6 +67,10 @@ def analyze():
     t3.start()
     threads_list.append(t3)
 
+    t4 = Thread(target=lambda q, arg1: q.put(check(arg1)), args=(que, inviteTerm))
+    t4.start()
+    threads_list.append(t4)
+
     # Join all the threads
     for t in threads_list:
         t.join()
@@ -80,8 +86,11 @@ def analyze():
             dg = jobres[i]
         if isinstance(jobres[i], int) or isinstance(jobres[i], float):
             negative = jobres[i]
-        if isinstance(jobres[i], str):
-            addr = jobres[i]
+        if isinstance(jobres[i], bool):
+            auth = jobres[i]
+        if isinstance(jobres[i], list):
+            correction = jobres[i]
+            correction = correction[0]
 
 
     if dg.empty:
@@ -90,20 +99,20 @@ def analyze():
         cac = False
 
 
-    if addr == "The Company address is valid":
-        cont = "This address looks legit"
-        auth = True
-    else:
-        cont = "This address might be bogus"
-        auth = False
+    # if addr == "The Company address is valid":
+    #     cont = "This address looks legit"
+    #     auth = True
+    # else:
+    #     cont = "This address might be bogus"
+    #     auth = False
 
 
-    inv = check(inviteTerm)
-    correction = inv
-    if inv == 0:
-        contt = "There are no errors in this invitation"
-    else:
-        contt = "You have errors in this invitation"
+    # inv = check(inviteTerm)
+    # correction = inv
+    # if inv == 0:
+    #     contt = "There are no errors in this invitation"
+    # else:
+    #     contt = "You have errors in this invitation"
 
 
     report = confidence_interval(correction, auth, negative, cac)
@@ -141,6 +150,10 @@ def analyze_form():
     t3.start()
     threads_list.append(t3)
 
+    t4 = Thread(target=lambda q, arg1: q.put(check(arg1)), args=(que, inviteTerm))
+    t4.start()
+    threads_list.append(t4)
+
     # Join all the threads
     for t in threads_list:
         t.join()
@@ -156,8 +169,11 @@ def analyze_form():
             dg = jobres[i]
         if isinstance(jobres[i], int) or isinstance(jobres[i], float):
             negative = jobres[i]
-        if isinstance(jobres[i], str):
-            addr = jobres[i]
+        if isinstance(jobres[i], bool):
+            auth = jobres[i]
+        if isinstance(jobres[i], list):
+            correction = jobres[i]
+            correction = correction[0]
 
 
     if dg.empty:
@@ -166,24 +182,24 @@ def analyze_form():
         cac = False
 
 
-    if addr == "The Company address is valid":
-        cont = "This address looks legit"
-        auth = True
-    else:
-        cont = "This address might be bogus"
-        auth = False
+    # if addr == "The Company address is valid":
+    #     cont = "This address looks legit"
+    #     auth = True
+    # else:
+    #     cont = "This address might be bogus"
+    #     auth = False
 
 
-    inv = check(inviteTerm)
-    correction = inv
-    if inv == 0:
-        contt = "There are no errors in this invitation"
-    else:
-        contt = "You have errors in this invitation"
+    # inv = check(inviteTerm)
+    # correction = inv
+    # if inv == 0:
+    #     contt = "There are no errors in this invitation"
+    # else:
+    #     contt = "You have errors in this invitation"
 
 
     report = confidence_interval(correction, auth, negative, cac)
-    
+    # print('Time to solve: ', time() - start_time)
     return jsonify(confidence=report)
 
 
