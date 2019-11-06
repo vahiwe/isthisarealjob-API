@@ -8,7 +8,7 @@ User=vahiwe
 Group=vahiwe
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/vahiwe/isthisarealjob-API
-ExecStart=/home/vahiwe/isthisarealjob-API/itarj/bin/gunicorn -t 120 app:app
+ExecStart=/home/vahiwe/isthisarealjob-API/itarj/bin/gunicorn --workers=2 -t 120 app:app
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 PrivateTmp=true
