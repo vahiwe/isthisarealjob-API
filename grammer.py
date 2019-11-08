@@ -38,11 +38,9 @@ def word(filename, final_type): # function to tokenize text
             if w not in stop_words:
                 final_text.append(w)
         if final_type == 'sentence':
-            # return tok_sent
             return reclean
         elif final_type == 'word':
             return final_text
-
 
 def remove_pattern(input_txt, pattern):
     r = re.findall(pattern, input_txt)

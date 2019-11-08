@@ -8,8 +8,6 @@ import urllib
 import nltk
 import spacy
 import queue
-nltk.download('stopwords')
-nltk.download('punkt')
 from threading import Thread
 # import en_core_web_sm
 from nltk.corpus import stopwords
@@ -32,7 +30,7 @@ def home():
     GET Request
     """
     # Give message to user
-    return redirect("https://documenter.getpostman.com/view/9310664/SW11VxQY?version=latest")
+    return redirect("https://documenter.getpostman.com/view/9310664/SW132eE3?version=latest")
 
 
 @app.route('/', methods=['POST'])
