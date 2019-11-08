@@ -50,14 +50,14 @@ def browser(api_key, url, company_name, driver):
 
 
 def scraper(company_name):
-    # chrome_path = 'C:\\Users\\BUCHI\\Downloads\\Programs\\chromedriver.exe'
+    chrome_path = 'C:\\Users\\BUCHI\\Downloads\\Programs\\chromedriver.exe'
     options = webdriver.ChromeOptions()
-    options.add_argument('--disable-gpu')
-    options.add_argument('--no-sandbox')
-    options.binary_location = GOOGLE_CHROME_PATH
+    # options.add_argument('--disable-gpu')
+    # options.add_argument('--no-sandbox')
+    # options.binary_location = GOOGLE_CHROME_PATH
     options.set_headless()
-    driver = webdriver.Chrome(CHROMEDRIVER_PATH, options=options)
-    # driver = webdriver.Chrome(chrome_path, options=options)
+    # driver = webdriver.Chrome(CHROMEDRIVER_PATH, options=options)
+    driver = webdriver.Chrome(chrome_path, options=options)
     api_key = "5050a1bdffcfe8fb69583c08263fc4f3"
     url = "https://publicsearch.cac.gov.ng/ComSearch/"
     page_source = browser(api_key, url, company_name, driver)
