@@ -30,6 +30,15 @@ __`❍ pip3 install -r requirements.txt`__
 
 __`❍ python app.py`__
 
-**5)** Open your API Request Client such as Postman or Advanced Rest Client to make a post request
+**5)** Open your API Request Client such as Postman or Advanced Rest Client to make a post request using this json format
 
+__`{
+  "company": "NNPC",
+  "address": "no. 21 adesanya aguda, surulere",
+  "invite": "You are welcom"
+}`__
+
+**6)** The request should be sent to this URL to get a response:
+
+__`❍ http://127.0.0.1:5000`__
 __*Happy developing!*__
