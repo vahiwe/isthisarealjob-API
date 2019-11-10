@@ -30,7 +30,7 @@ __`❍ pip3 install -r requirements.txt`__
 
 __`❍ python app.py`__
 
-**5)** Open your API Request Client such as Postman or Advanced Rest Client to make a post request using this json format
+**5)** Open your API Request Client such as [Postman](https://www.getpostman.com/downloads/) or [Advanced Rest Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo) to make a post request using this json format
 
 __`{
   "company": "NNPC",
