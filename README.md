@@ -8,6 +8,9 @@
 
 ## :page_with_curl: _About_
 - This is the source code for the job confidence checker on [ITARJ](itarj.com)
+- You will need the Python Imaging Library (PIL) (or the [Pillow](https://pypi.org/project/Pillow/) fork). Under Debian/Ubuntu, this is the package python-imaging or python3-imaging.
+- Install [Google Tesseract OCR](https://github.com/tesseract-ocr/tesseract) (additional info how to install the engine on Linux, Mac OSX and Windows). You must be able to invoke the tesseract command as tesseract. If this isn’t the case, for example because tesseract isn’t in your PATH, you will have to change the “tesseract_cmd” variable pytesseract.pytesseract.tesseract_cmd. Under Debian/Ubuntu you can use the package tesseract-ocr. For Mac OS users. please install homebrew package tesseract.
+- You'll need [chromedriver](https://chromedriver.chromium.org/getting-started) for the selenium processes
 
 ## :page_with_curl: _Installation Guide_
 
