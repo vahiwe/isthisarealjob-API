@@ -5,12 +5,6 @@ import re
 import pandas as pd
 from time import sleep, time
 
-# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google-chrome'
-# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
-
-GOOGLE_CHROME_PATH = '/usr/bin/google-chrome'
-CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
-
 
 def get_token(api_key, url, driver):
     method = "userrecaptcha"
@@ -22,7 +16,6 @@ def get_token(api_key, url, driver):
     # removing html tags from response
     if 'OK' in response:
         captcha_id = re.sub('<[\w]+>*|<\/[\w]+>*', '', response).split('|')[1]
-        # start_time = time()
         # url to get captcha token
         fetch_url = "http://2captcha.com/res.php?key={}&action=get&id={}".format(api_key, captcha_id)
         for i in range(1, 20):
@@ -32,7 +25,6 @@ def get_token(api_key, url, driver):
             if 'OK' in reply:
                 break
         token = re.sub('<[\w]+>*|<\/[\w]+>*', '', reply).split('|')[1]
-        # print('Time to solve: ', time() - start_time)
         return token
     else:
         print("response Error")

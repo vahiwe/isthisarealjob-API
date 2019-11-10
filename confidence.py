@@ -38,23 +38,12 @@ def confidence_interval(correction, auth, neg, cac):
         score_c = 4
     else:
         score_c = 2
-    # elif correc >= 5 and correc <= 10:
-    #     score_c = 12.5
-    # elif correc > 10:
-    #     score_c = 0
 
     if cac == True:
         score_cac = 0
     else:
         score_cac = 50
         
-    # confidence = ((score_a + score_n + score_c) / 30) * 10
     confidence = round(score_a + score_n + score_c + score_cac)
 
     return confidence    
-    # if confidence > 6:
-    #     return "Based on logistics the job invite no be scam"
-    # if confidence >= 4 and confidence <= 6:
-    #     return "The job invite shows elements of scam but not too sure"
-    # if confidence < 4:
-    #     return "This is likely a scam"

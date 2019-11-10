@@ -9,7 +9,6 @@ import nltk
 import spacy
 import queue
 from threading import Thread
-# import en_core_web_sm
 from nltk.corpus import stopwords
 from PIL import Image
 from gingerit.gingerit import GingerIt
@@ -44,7 +43,6 @@ def analyze():
         searchTerm = data['company']
         addressTerm = data['address']
         inviteTerm = data['invite']
-        # data = [data]
     except KeyError:
         titl = "You have a KeyError. Please check your JSON input"
         return jsonify(errors=titl)
@@ -95,23 +93,6 @@ def analyze():
         cac = True
     else:
         cac = False
-
-
-    # if addr == "The Company address is valid":
-    #     cont = "This address looks legit"
-    #     auth = True
-    # else:
-    #     cont = "This address might be bogus"
-    #     auth = False
-
-
-    # inv = check(inviteTerm)
-    # correction = inv
-    # if inv == 0:
-    #     contt = "There are no errors in this invitation"
-    # else:
-    #     contt = "You have errors in this invitation"
-
 
     report = confidence_interval(correction, auth, negative, cac)
     print('Time to solve: ', time() - start_time)
@@ -179,25 +160,7 @@ def analyze_form():
     else:
         cac = False
 
-
-    # if addr == "The Company address is valid":
-    #     cont = "This address looks legit"
-    #     auth = True
-    # else:
-    #     cont = "This address might be bogus"
-    #     auth = False
-
-
-    # inv = check(inviteTerm)
-    # correction = inv
-    # if inv == 0:
-    #     contt = "There are no errors in this invitation"
-    # else:
-    #     contt = "You have errors in this invitation"
-
-
     report = confidence_interval(correction, auth, negative, cac)
-    # print('Time to solve: ', time() - start_time)
     return jsonify(confidence=report)
 
 

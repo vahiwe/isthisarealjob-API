@@ -5,10 +5,6 @@ gmaps = googlemaps.Client(key='AIzaSyAlvT9QoXecXq_WFfd4_slajtCnMJBXB6Y')
 
 def verify_address(address):    
     geocode_result = gmaps.geocode(address)
-    # if geocode_result != '[]':
-    #     return "Address verified"
-    # else:
-    #     return "Couldn't verify address"
     if geocode_result == []:
         addr = "This address is invalid"
     else:
